@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -12,8 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int maxNumber = 1000;
   List<int> randomNumbers = [
-    123, 456, 789,
+    123,
+    456,
+    789,
   ];
 
   @override
@@ -27,7 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Column(
               children: [
-                _Header(),
+                _Header(
+                  onPressed: onSettingsPop,
+                ),
                 _Body(randomNumbers: randomNumbers),
                 _Footer(onPressed: onRandomNumberGenerated),
               ],
@@ -41,16 +47,34 @@ class _HomeScreenState extends State<HomeScreen> {
     final Set<int> newNumbers = {};
 
     while (newNumbers.length != 3) {
-      newNumbers.add(rand.nextInt(1000));
+      newNumbers.add(rand.nextInt(maxNumber));
     }
     setState(() {
       randomNumbers = newNumbers.toList();
     });
   }
+
+  void onSettingsPop() async {
+      final int? result = await Navigator.of(context).push<int>(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return SettingScreen();
+          },
+        ),
+      );
+      if(result!=null){
+        setState(() {
+          maxNumber = result;
+        });
+      }
+    }
+
 }
 
 class _Header extends StatelessWidget {
-  const _Header({super.key});
+  final VoidCallback onPressed;
+
+  const _Header({required this.onPressed, Key?key}): super(key:key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,14 +90,7 @@ class _Header extends StatelessWidget {
           ),
         ),
         IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (BuildContext context){
-                  return SettingScreen();
-                },
-                ),
-              );
-            },
+            onPressed: onPressed,
             icon: Icon(
               Icons.settings,
               color: RED_COLOR,
@@ -97,24 +114,21 @@ class _Body extends StatelessWidget {
             .asMap()
             .entries
             .map(
-              (x) =>
-              Padding(
-                padding:
-                EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
+              (x) => Padding(
+                padding: EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
                 child: Row(
                   children: x.value
                       .toString()
                       .split('')
-                      .map((y) =>
-                      Image.asset(
-                        'asset/img/${y}.png',
-                        height: 70.0,
-                        width: 40.0,
-                      ))
+                      .map((y) => Image.asset(
+                            'asset/img/${y}.png',
+                            height: 70.0,
+                            width: 40.0,
+                          ))
                       .toList(),
                 ),
               ),
-        )
+            )
             .toList(),
       ),
     );
@@ -124,7 +138,10 @@ class _Body extends StatelessWidget {
 class _Footer extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const _Footer({required this.onPressed, Key?key,}) : super(key: key);
+  const _Footer({
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
