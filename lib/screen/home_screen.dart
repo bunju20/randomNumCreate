@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:random/constant/colors.dart';
 
@@ -9,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<int> randomNumbers = [123, 456, 789];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,14 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      123,
-                      456,
-                      789,
-                    ].asMap().entries
+                    children: randomNumbers
+                        .asMap()
+                        .entries
                         .map(
                           (x) => Padding(
-                            padding: EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
+                            padding:
+                                EdgeInsets.only(bottom: x.key == 2 ? 0 : 16.0),
                             child: Row(
                               children: x.value
                                   .toString()
@@ -69,7 +72,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        final rand = Random();
+                        final Set<int> newNumbers = {};
+
+                        while(newNumbers.length != 3){
+                          newNumbers.add(rand.nextInt(1000));
+                        }
+                        setState(() {
+                          randomNumbers = newNumbers.toList();
+                        });
+                      },
                       child: Text(
                         '생성하기!',
                         style: TextStyle(
