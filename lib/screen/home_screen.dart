@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int maxNumber = 1000;
   List<int> randomNumbers = [
-    123,
+    124,
     456,
     789,
   ];
